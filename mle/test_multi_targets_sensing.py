@@ -38,13 +38,13 @@ def plot_targets_and_estimates(
 
 
 def test_two_target_pipeline():
-    np.random.seed(0)
+    np.random.seed()
 
     # ---- Hover positions ----
     S_hover = np.array([
         [200, 300, 400, 500],
         [200, 200, 200, 200],
-        [100, 100, 100, 100]
+        [100, 150, 200, 250]
     ])
 
     # ---- True targets ----
