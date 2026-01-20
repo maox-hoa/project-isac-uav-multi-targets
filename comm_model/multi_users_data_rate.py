@@ -1,8 +1,7 @@
 import numpy as np
 from comm_model.users_quad_distance import users_quad_distance
 
-
-def stage_comm_data(Sj, sc_list, Bm, params):
+def stage_comm_data(Sj, Bm, params):
     """
     Computes total transmitted data for each CU in one stage j.
 
@@ -10,27 +9,19 @@ def stage_comm_data(Sj, sc_list, Bm, params):
     ----------
     Sj : np.ndarray, shape (3, Nf_j)
         UAV trajectory in stage j
-    sc_list : list of np.ndarray
-        List of CU positions, each shape (3,)
     Bm : np.ndarray, shape (M,)
         Bandwidth allocation for each CU in stage j
     params : dict
-    Tf : float
-        Flying duration per segment
-    Th : float
-        Hovering duration
-    mu : int
-        Hovering interval
-
     Returns
     -------
     psi_c : np.ndarray, shape (M,)
         Total transmitted data for each CU in this stage
     """
-    Tf = params["T_f"]
-    Th = params["T_h"]
-    mu = params["mu"]
     sim = params["sim"]
+    Tf = sim["T_f"]
+    sc_list = params["setup"]["comm_user_pos"]
+    Th = sim["T_h"]
+    mu = sim["mu"]
     P = sim["P"]
     alpha_0 = sim["alpha_0"]
     sigma_0 = sim["sigma_0"]
