@@ -11,7 +11,10 @@ sim = {
     "alpha_0": db2pow(-50),
     "N_0": db2pow(-170) * 1e-3,
     "P": db2pow(20) * 1e-3,
-    "B": 1e6,
+    "Bm" : np.array([
+        0.5e6,   # CU 1
+        0.5e6    # CU 2
+        ]),
     "H": 200,
     "L_x": 1500,
     "L_y": 1500,
@@ -34,8 +37,8 @@ sim = {
 
 # dependent parameters
 sim["K_stg"] = int(sim["N_stg"] / sim["mu"])
-sim["G_p"] = 0.1 * sim["B"]
-sim["sigma_0"] = np.sqrt(sim["B"] * sim["N_0"])
+sim["G_p"] = 0.1 * sim["Bm"]
+sim["sigma_0"] = np.sqrt(sim["Bm"] * sim["N_0"])
 sim["N_final"] = sim["N_stg"]
 sim["K_final"] = sim["K_stg"]
 
@@ -59,7 +62,10 @@ energy = {
 # ---------------------------------------------------------------------
 setup = {
     "base_station_pos": np.array([250, 250, 1000]),
-    "comm_user_pos": np.array([750, 1250, 0]),
+     "comm_user_pos": np.array([
+        [750, 1250, 0],   # CU 1
+        [1000, 800, 0],   # CU 2 (test)
+    ]),
     "est_sense_target": np.array([749, 978, 0]),
     "sense_target_pos": np.array([1250, 1000, 0]),
     "final_pos": np.array([800, 1000]),
