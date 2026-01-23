@@ -13,7 +13,8 @@ sim = {
     "P": db2pow(20) * 1e-3,
     "Bm" : np.array([
         0.5e6,   # CU 1
-        0.5e6    # CU 2
+        0.25e6,    # CU 2
+        0.25e6, # CU 3
         ]),
     "H": 200,
     "L_x": 1500,
@@ -65,6 +66,7 @@ setup = {
      "comm_user_pos": np.array([
         [750, 1250, 0],   # CU 1
         [1000, 800, 0],   # CU 2 (test)
+        [1000, 0,   0],
     ]),
     "est_sense_target": np.array([749, 978, 0]),
     "sense_target_pos": np.array([1250, 1000, 0]),
