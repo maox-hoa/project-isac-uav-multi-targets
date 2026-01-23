@@ -101,87 +101,87 @@ def get_S_hover(params, m_start, m_end, S):
     return hover_idxs, S_hover
 
 
-# ==========================================
-# 2. HÀM TEST VÀ VẼ 3D
-# ==========================================
-def test_visualization():
-    # --- A. Setup Parameters ---
-    params = {
-        "sim": {
-            "N_stg": 20,  # 20 waypoints mỗi stage
-            "mu": 3  # Cứ 5 waypoints thì có 1 điểm hover
-        }
-    }
-
-    # Giả sử chạy từ stage 1 đến stage 3
-    m_start = 1
-    m_end = 1
-    num_stages = m_end - m_start + 1
-
-    # Tổng số điểm waypoint cần thiết
-    total_waypoints = params["sim"]["N_stg"] * num_stages
-
-    # --- B. Generate Dummy 3D Trajectory (Spiral/Helix) ---
-    # Tạo đường xoắn ốc để dễ nhìn 3D
-    t = np.linspace(0, 4 * np.pi, total_waypoints)
-    x = 500 * np.cos(t)  # Xoay tròn bán kính 500m
-    y = 500 * np.sin(t)
-    z = np.linspace(0, 200, total_waypoints)  # Bay lên cao dần từ 0 đến 200m
-
-    # Tạo ma trận S shape (3, N)
-    S = np.vstack((x, y, z))
-
-    print(f"Shape of Trajectory S: {S.shape}")
-
-    # --- C. Call the function ---
-    try:
-        hover_idxs, S_hover = get_S_hover(params, m_start, m_end, S)
-
-        print("\n--- Results ---")
-        print(f"Selected Hover Indices: {hover_idxs}")
-        print(f"Shape of S_hover: {S_hover.shape}")
-
-        # --- D. Plotting 3D ---
-        fig = plt.figure(figsize=(12, 8))
-        ax = fig.add_subplot(111, projection='3d')
-
-        # 1. Vẽ đường bay (Trajectory)
-        ax.plot(S[0, :], S[1, :], S[2, :],
-                color='blue', alpha=0.5, linewidth=1, label='UAV Trajectory')
-
-        # 2. Vẽ các điểm Waypoints (chấm nhỏ màu xanh)
-        ax.scatter(S[0, :], S[1, :], S[2, :],
-                   color='blue', s=10, alpha=0.3)
-
-        # 3. Vẽ các điểm Hovering Points (chấm to màu đỏ) [Image of a 3D scatter plot showing trajectory and highlighted points]
-        if S_hover.shape[1] > 0:
-            ax.scatter(S_hover[0, :], S_hover[1, :], S_hover[2, :],
-                       color='red', s=100, marker='*', label='Hovering Points', depthshade=False)
-
-            # Đánh số thứ tự các điểm hover
-            for i in range(S_hover.shape[1]):
-                ax.text(S_hover[0, i], S_hover[1, i], S_hover[2, i],
-                        f'{hover_idxs[i]}', color='black', fontsize=9, fontweight='bold')
-
-        # 4. Trang trí biểu đồ
-        ax.set_title(
-            f'UAV Trajectory & Hover Points\n(N_stg={params["sim"]["N_stg"]}, mu={params["sim"]["mu"]}, Stages {m_start}-{m_end})')
-        ax.set_xlabel('X (m)')
-        ax.set_ylabel('Y (m)')
-        ax.set_zlabel('Z (Altitude m)')
-        ax.legend()
-
-        # Đánh dấu điểm đầu và cuối
-        ax.text(S[0, 0], S[1, 0], S[2, 0], "Start", color='green')
-        ax.text(S[0, -1], S[1, -1], S[2, -1], "End", color='purple')
-
-        plt.show()
-
-    except Exception as e:
-        print(f"An error occurred during execution: {e}")
-        import traceback
-        traceback.print_exc()
-
-
-if __name__ == "__main__":
-    test_visualization()
+# # ==========================================
+# # 2. HÀM TEST VÀ VẼ 3D
+# # ==========================================
+# def test_visualization():
+#     # --- A. Setup Parameters ---
+#     params = {
+#         "sim": {
+#             "N_stg": 20,  # 20 waypoints mỗi stage
+#             "mu": 3  # Cứ 5 waypoints thì có 1 điểm hover
+#         }
+#     }
+#
+#     # Giả sử chạy từ stage 1 đến stage 3
+#     m_start = 1
+#     m_end = 1
+#     num_stages = m_end - m_start + 1
+#
+#     # Tổng số điểm waypoint cần thiết
+#     total_waypoints = params["sim"]["N_stg"] * num_stages
+#
+#     # --- B. Generate Dummy 3D Trajectory (Spiral/Helix) ---
+#     # Tạo đường xoắn ốc để dễ nhìn 3D
+#     t = np.linspace(0, 4 * np.pi, total_waypoints)
+#     x = 500 * np.cos(t)  # Xoay tròn bán kính 500m
+#     y = 500 * np.sin(t)
+#     z = np.linspace(0, 200, total_waypoints)  # Bay lên cao dần từ 0 đến 200m
+#
+#     # Tạo ma trận S shape (3, N)
+#     S = np.vstack((x, y, z))
+#
+#     print(f"Shape of Trajectory S: {S.shape}")
+#
+#     # --- C. Call the function ---
+#     try:
+#         hover_idxs, S_hover = get_S_hover(params, m_start, m_end, S)
+#
+#         print("\n--- Results ---")
+#         print(f"Selected Hover Indices: {hover_idxs}")
+#         print(f"Shape of S_hover: {S_hover.shape}")
+#
+#         # --- D. Plotting 3D ---
+#         fig = plt.figure(figsize=(12, 8))
+#         ax = fig.add_subplot(111, projection='3d')
+#
+#         # 1. Vẽ đường bay (Trajectory)
+#         ax.plot(S[0, :], S[1, :], S[2, :],
+#                 color='blue', alpha=0.5, linewidth=1, label='UAV Trajectory')
+#
+#         # 2. Vẽ các điểm Waypoints (chấm nhỏ màu xanh)
+#         ax.scatter(S[0, :], S[1, :], S[2, :],
+#                    color='blue', s=10, alpha=0.3)
+#
+#         # 3. Vẽ các điểm Hovering Points (chấm to màu đỏ) [Image of a 3D scatter plot showing trajectory and highlighted points]
+#         if S_hover.shape[1] > 0:
+#             ax.scatter(S_hover[0, :], S_hover[1, :], S_hover[2, :],
+#                        color='red', s=100, marker='*', label='Hovering Points', depthshade=False)
+#
+#             # Đánh số thứ tự các điểm hover
+#             for i in range(S_hover.shape[1]):
+#                 ax.text(S_hover[0, i], S_hover[1, i], S_hover[2, i],
+#                         f'{hover_idxs[i]}', color='black', fontsize=9, fontweight='bold')
+#
+#         # 4. Trang trí biểu đồ
+#         ax.set_title(
+#             f'UAV Trajectory & Hover Points\n(N_stg={params["sim"]["N_stg"]}, mu={params["sim"]["mu"]}, Stages {m_start}-{m_end})')
+#         ax.set_xlabel('X (m)')
+#         ax.set_ylabel('Y (m)')
+#         ax.set_zlabel('Z (Altitude m)')
+#         ax.legend()
+#
+#         # Đánh dấu điểm đầu và cuối
+#         ax.text(S[0, 0], S[1, 0], S[2, 0], "Start", color='green')
+#         ax.text(S[0, -1], S[1, -1], S[2, -1], "End", color='purple')
+#
+#         plt.show()
+#
+#     except Exception as e:
+#         print(f"An error occurred during execution: {e}")
+#         import traceback
+#         traceback.print_exc()
+#
+#
+# if __name__ == "__main__":
+#     test_visualization()
