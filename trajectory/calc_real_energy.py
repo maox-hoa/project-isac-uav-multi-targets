@@ -38,7 +38,7 @@ def power_model(V_norm, P_0, U_tip, P_I, v_0, D_0, rho, s, A):
 # ==========================================================
 # Real energy computation – 3D UAV motion
 # ==========================================================
-def calc_real_energy_3d(S, s_s, params):
+def calc_real_energy(S, s_s, params):
     """
     Compute total energy consumption of one stage (3D UAV trajectory).
 

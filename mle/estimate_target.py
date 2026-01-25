@@ -3,7 +3,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 
-def estimate_target_3d(S_hover, D_meas, params, x0):
+def estimate_target(S_hover, D_meas, params, x0):
     """
     Continuous MLE-based 3D target localization using range measurements.
 

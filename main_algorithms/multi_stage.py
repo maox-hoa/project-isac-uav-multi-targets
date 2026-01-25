@@ -4,9 +4,9 @@ from scipy.optimize import minimize
 from itertools import permutations
 
 # Giữ nguyên các import của bạn
-from radar_sensing_model.sense_target_3d import sense_target_3d
-from mle.estimate_target_3d import estimate_target_3d
-from trajectory.calc_real_energy_3d import calc_real_energy_3d
+from radar_sensing_model.sense_target import sense_target
+from mle.estimate_target import estimate_target
+from trajectory.calc_real_energy import calc_real_energy
 from trajectory.calc_remaining_waypoints import calc_remaining_waypoints
 from main_algorithms.ga_algorithm import optimize_ga
 
@@ -200,7 +200,7 @@ def multi_stage_3d(params, setup):
     for i in range(S_hover_stage0.shape[1]):
         pos_uav = S_hover_stage0[:, i].reshape(3, 1)
         # sense_target_3d trả về mảng khoảng cách shape (K,)
-        d = sense_target_3d(s_t, pos_uav, params)
+        d = sense_target(s_t, pos_uav, params)
         meas_stage0.append(d)
 
     # 5. Estimate (MLE + Association)
@@ -273,7 +273,7 @@ def multi_stage_3d(params, setup):
         # Optimize trajectory
         # --------------------------------------------------
         # Lưu ý: optimize_ga sẽ nhận điểm bắt đầu là s_s (điểm cuối Stage 0)
-        wp_new, fitness_crb_history, fitness_rate_history = optimize_ga_3d(
+        wp_new, fitness_crb_history, fitness_rate_history = optimize_ga(
             S_total_m, s_target_est, params, E_m, N_wp=N_cur
         )
 
@@ -289,7 +289,7 @@ def multi_stage_3d(params, setup):
         # Sense & estimate
         # --------------------------------------------------
         hover_positions = wp_new[:, mu - 1::mu]
-        D_stage = sense_target_3d(s_t, hover_positions, params)
+        D_stage = sense_target(s_t, hover_positions, params)
         D_meas_list.append(D_stage)
 
         S_hover_all = np.concatenate(
@@ -297,7 +297,7 @@ def multi_stage_3d(params, setup):
         )
         D_all = np.concatenate(D_meas_list)
 
-        s_target_est = estimate_target_3d(
+        s_target_est = estimate_target(
             S_hover_all, D_all, params, s_target_est
         )
         S_target_est_list.append(s_target_est)
@@ -305,7 +305,7 @@ def multi_stage_3d(params, setup):
         # --------------------------------------------------
         # Energy update
         # --------------------------------------------------
-        E_used = calc_real_energy_3d(wp_new, s_s, params)
+        E_used = calc_real_energy(wp_new, s_s, params)
 
         E_used_vec.append(E_used)
         E_m -= E_used

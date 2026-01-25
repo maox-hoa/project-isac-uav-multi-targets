@@ -67,7 +67,6 @@ def sigma_k(d_s, params):
     # Ở đây dùng sigma_0 cố định cho đơn giản như code gốc
     return np.full_like(d_s, params["sim"]["sigma_0"])
 
-
 def sense_multiple_targets(S_q, true_targets_pos, params, rng=None):
     """
     Mô phỏng đo khoảng cách từ 1 vị trí UAV đến Nhiều Target.
@@ -215,48 +214,48 @@ def solve_association_and_estimate(measurements_list, S_hover, params):
 
     return np.array(best_estimates).T
 
-#
-# # Chạy giải thuật
-# estimated_targets = solve_association_and_estimate(all_measurements_per_hover, S_hover, params)
-#
-# print(f"\nVị trí Ước lượng (Estimated Targets):\n{estimated_targets.T}")
-#
-# # --- 6. Vẽ đồ thị 3D ---
-# fig = plt.figure(figsize=(10, 8))
-# ax = fig.add_subplot(111, projection='3d')
-#
-# # 1. Vẽ Hover Points (Màu xanh dương)
-# ax.scatter(S_hover[0, :], S_hover[1, :], S_hover[2, :], c='blue', marker='^', s=100, label='Hover Points (Stage 0)')
-# # Vẽ Base
-# ax.scatter(base_pos[0], base_pos[1], 0, c='black', marker='s', s=100, label='Base Station')
-#
-# # 2. Vẽ True Targets (Màu đỏ)
-# ax.scatter(true_targets[0, :], true_targets[1, :], true_targets[2, :], c='red', marker='o', s=100, label='True Targets')
-#
-# # 3. Vẽ Estimated Targets (Màu xanh lá)
-# ax.scatter(estimated_targets[0, :], estimated_targets[1, :], estimated_targets[2, :], c='green', marker='*', s=150,
-#            label='Estimated Targets')
-#
-# # 4. Nối đường giữa Hover Point và Target (để minh họa sensing geometry)
-# for k in range(K_targets):
-#     for h in range(3):
-#         ax.plot([S_hover[0, h], true_targets[0, k]],
-#                 [S_hover[1, h], true_targets[1, k]],
-#                 [S_hover[2, h], true_targets[2, k]], 'gray', linestyle='--', alpha=0.3)
-#
-#     # Nối True vs Estimated
-#     ax.plot([true_targets[0, k], estimated_targets[0, k]],
-#             [true_targets[1, k], estimated_targets[1, k]],
-#             [true_targets[2, k], estimated_targets[2, k]], 'k:', linewidth=1.5)
-#
-# # Thiết lập trục và nhãn
-# ax.set_xlabel('X (m)')
-# ax.set_ylabel('Y (m)')
-# ax.set_zlabel('Z (Altitude)')
-# ax.set_title(f'Stage 0: Coarse Target Localization (K={K_targets})')
-# ax.legend()
-#
-# # Giới hạn trục Z cho đẹp hơn
-# ax.set_zlim(0, 500)
-#
-# plt.show()
+
+# Chạy giải thuật
+estimated_targets = solve_association_and_estimate(all_measurements_per_hover, S_hover, params)
+
+print(f"\nVị trí Ước lượng (Estimated Targets):\n{estimated_targets.T}")
+
+# --- 6. Vẽ đồ thị 3D ---
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# 1. Vẽ Hover Points (Màu xanh dương)
+ax.scatter(S_hover[0, :], S_hover[1, :], S_hover[2, :], c='blue', marker='^', s=100, label='Hover Points (Stage 0)')
+# Vẽ Base
+ax.scatter(base_pos[0], base_pos[1], 0, c='black', marker='s', s=100, label='Base Station')
+
+# 2. Vẽ True Targets (Màu đỏ)
+ax.scatter(true_targets[0, :], true_targets[1, :], true_targets[2, :], c='red', marker='o', s=100, label='True Targets')
+
+# 3. Vẽ Estimated Targets (Màu xanh lá)
+ax.scatter(estimated_targets[0, :], estimated_targets[1, :], estimated_targets[2, :], c='green', marker='*', s=150,
+           label='Estimated Targets')
+
+# 4. Nối đường giữa Hover Point và Target (để minh họa sensing geometry)
+for k in range(K_targets):
+    for h in range(3):
+        ax.plot([S_hover[0, h], true_targets[0, k]],
+                [S_hover[1, h], true_targets[1, k]],
+                [S_hover[2, h], true_targets[2, k]], 'gray', linestyle='--', alpha=0.3)
+
+    # Nối True vs Estimated
+    ax.plot([true_targets[0, k], estimated_targets[0, k]],
+            [true_targets[1, k], estimated_targets[1, k]],
+            [true_targets[2, k], estimated_targets[2, k]], 'k:', linewidth=1.5)
+
+# Thiết lập trục và nhãn
+ax.set_xlabel('X (m)')
+ax.set_ylabel('Y (m)')
+ax.set_zlabel('Z (Altitude)')
+ax.set_title(f'Stage 0: Coarse Target Localization (K={K_targets})')
+ax.legend()
+
+# Giới hạn trục Z cho đẹp hơn
+ax.set_zlim(0, 500)
+
+plt.show()

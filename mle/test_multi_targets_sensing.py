@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
 from parameters import params
 from multi_targets_sensing import sense_two_targets, associate_measurements
-from estimate_target_3d import estimate_target_3d
+from estimate_target import estimate_target_3d
 
 
 def plot_targets_and_estimates(
