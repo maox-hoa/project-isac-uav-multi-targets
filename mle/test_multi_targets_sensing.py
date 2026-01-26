@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
 from parameters import params
 from multi_targets_sensing import sense_two_targets, associate_measurements
-from estimate_target import estimate_target_3d
+from estimate_target import estimate_target
 
 
 def plot_targets_and_estimates(
@@ -66,8 +66,8 @@ def test_two_target_pipeline():
     )
 
     # ---- Estimate ----
-    p1_hat = estimate_target_3d(S_hover, D1, params, p1_init)
-    p2_hat = estimate_target_3d(S_hover, D2, params, p2_init)
+    p1_hat = estimate_target(S_hover, D1, params, p1_init)
+    p2_hat = estimate_target(S_hover, D2, params, p2_init)
 
     print("Target 1 true / estimated:", p1_true, p1_hat)
     print("Target 2 true / estimated:", p2_true, p2_hat)
