@@ -1,5 +1,5 @@
 import numpy as np
-from radar_sensing_model.relative_distance_3d import relative_distance_3d
+from radar_sensing_model.relative_distance import relative_distance
 
 
 def fisher_mat_entry_3d(S_hov, s_target, entry, params,
@@ -11,7 +11,7 @@ def fisher_mat_entry_3d(S_hov, s_target, entry, params,
     ----------
     S_hov : ndarray, shape (3, K)
         UAV hovering points
-    s_target : ndarray, shape (3,)
+    s_target : ndarray, shape (3)
         Target position
     entry : str
         One of ["theta_a","theta_b","theta_c",
@@ -29,7 +29,7 @@ def fisher_mat_entry_3d(S_hov, s_target, entry, params,
     s_target = np.asarray(s_target, dtype=float).reshape(3,)
 
     if relative_dist_vec is None:
-        relative_dist_vec = relative_distance_3d(S_hov, s_target)
+        relative_dist_vec = relative_distance(S_hov, s_target)
 
     if factor_CRB is None:
         sim = params["sim"]
