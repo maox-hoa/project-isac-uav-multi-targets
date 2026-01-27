@@ -8,7 +8,7 @@ from estimate_target import estimate_target
 
 
 def plot_targets_and_estimates(
-    S_hover,
+    s_hover,
     p1_true, p2_true,
     p1_hat, p2_hat
 ):
@@ -16,7 +16,7 @@ def plot_targets_and_estimates(
     ax = fig.add_subplot(111, projection="3d")
 
     ax.scatter(
-        S_hover[0], S_hover[1], S_hover[2],
+        s_hover[0], s_hover[1], s_hover[2],
         marker="o", s=60, label="UAV hover"
     )
 
@@ -41,7 +41,7 @@ def test_two_target_pipeline():
     np.random.seed()
 
     # ---- Hover positions ----
-    S_hover = np.array([
+    s_hover = np.array([
         [200, 300, 400, 500],
         [200, 200, 200, 200],
         [100, 150, 200, 250]
@@ -58,23 +58,23 @@ def test_two_target_pipeline():
     sigma = params["sim"]["sigma_0"]
 
     # ---- Sense ----
-    D_echoes = sense_two_targets(S_hover, p1_true, p2_true, sigma)
+    d_echoes = sense_two_targets(s_hover, p1_true, p2_true, sigma)
 
     # ---- Associate ----
-    D1, D2 = associate_measurements(
-        S_hover, D_echoes, p1_init, p2_init
+    d1, d2 = associate_measurements(
+        s_hover, d_echoes, p1_init, p2_init
     )
 
     # ---- Estimate ----
-    p1_hat = estimate_target(S_hover, D1, params, p1_init)
-    p2_hat = estimate_target(S_hover, D2, params, p2_init)
+    p1_hat = estimate_target(s_hover, d1, params, p1_init)
+    p2_hat = estimate_target(s_hover, d2, params, p2_init)
 
     print("Target 1 true / estimated:", p1_true, p1_hat)
     print("Target 2 true / estimated:", p2_true, p2_hat)
 
     # ---- Plot ----
     plot_targets_and_estimates(
-        S_hover,
+        s_hover,
         p1_true, p2_true,
         p1_hat, p2_hat
     )
