@@ -2,34 +2,34 @@ import numpy as np
 from radar_sensing_model.relative_distance import relative_distance
 
 
-def fisher_mat_entry_3d(S_hov, s_target, entry, params,
+def fisher_matrix_entry(S_hov, s_target, entry, params,
                         relative_dist_vec=None, factor_CRB=None):
     """
-    Fisher matrix entry for 3D CRB model.
+    Fisher matrix entry for 3D CRB model (Nx3 convention).
 
     Parameters
     ----------
-    S_hov : ndarray, shape (3, K)
+    S_hov : ndarray, shape (N, 3)
         UAV hovering points
-    s_target : ndarray, shape (3)
+    s_target : ndarray, shape (3,)
         Target position
     entry : str
         One of ["theta_a","theta_b","theta_c",
                 "theta_d","theta_e","theta_f"]
     params : dict
         System parameters
-
-    Returns
-    -------
-    value : float
-        Fisher matrix element
     """
 
     S_hov = np.asarray(S_hov, dtype=float)
-    s_target = np.asarray(s_target, dtype=float).reshape(3,)
+    s_target = np.asarray(s_target, dtype=float)
+
+    assert S_hov.ndim == 2 and S_hov.shape[1] == 3
 
     if relative_dist_vec is None:
         relative_dist_vec = relative_distance(S_hov, s_target)
+
+    # tránh singular
+    relative_dist_vec = np.maximum(relative_dist_vec, 1e-6)
 
     if factor_CRB is None:
         sim = params["sim"]
@@ -37,9 +37,9 @@ def fisher_mat_entry_3d(S_hov, s_target, entry, params,
             sim["a"] * sim["sigma_0"]**2
         )
 
-    rx = (S_hov[0, :] - s_target[0]).reshape(-1, 1)
-    ry = (S_hov[1, :] - s_target[1]).reshape(-1, 1)
-    rz = (S_hov[2, :] - s_target[2]).reshape(-1, 1)
+    rx = (S_hov[:, 0] - s_target[0]).reshape(-1, 1)
+    ry = (S_hov[:, 1] - s_target[1]).reshape(-1, 1)
+    rz = (S_hov[:, 2] - s_target[2]).reshape(-1, 1)
 
     D4 = np.diag(1.0 / (relative_dist_vec**4))
     D6 = np.diag(1.0 / (relative_dist_vec**6))
