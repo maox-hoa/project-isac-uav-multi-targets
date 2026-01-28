@@ -4,7 +4,7 @@ from radar_sensing_model.sensing_metric_max_crb import sensing_metric_max_crb
 from main_algorithms.test_constraints import test_constraints
 import gc
 
-def optimize_ga_3d(wp_prev, estimate_target_position, params, E_remain, N_wp):
+def optimize_ga(wp_prev, estimate_target_position, params, E_remain, N_wp):
     """
     GA-based trajectory optimization for one stage (3D)
 
@@ -33,7 +33,7 @@ def optimize_ga_3d(wp_prev, estimate_target_position, params, E_remain, N_wp):
     s_c = params["setup"]["comm_user_pos"] if "setup" in params else None
 
     rng = np.random.default_rng()
-
+    bandwidth_associated = [] #Băng thông của hệ thống. Khởi tạo băng thông gốc.
     # =========================
     # Determine start position
     # =========================
@@ -277,6 +277,7 @@ def optimize_ga_3d(wp_prev, estimate_target_position, params, E_remain, N_wp):
 
     return (
         wp_new,
+        bandwidth_associated,
         # best_fitness_history,
         best_fitness_crb_history,
         best_fitness_rate_history
