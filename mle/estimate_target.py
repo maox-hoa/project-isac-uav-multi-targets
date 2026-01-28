@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.optimize import least_squares
 
-
+# Hàm này được dùng ngay sau khi sense targets Mục đích để cập nhật vị trí các vật thể.
 def estimate_target(s_hover, d_meas, p_init):
     """
     Estimate target position using nonlinear least squares.
