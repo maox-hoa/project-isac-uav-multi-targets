@@ -161,5 +161,5 @@ def multi_stage_3d_multi_target_multi_user(params, setup):
         "rate_history": np.array(rate_history_all),
         "crb_history": np.array(crb_history_all),
         "best_rate": np.max(rate_history_all),
-        "best_crb": np.max(crb_history_all),
+        "best_crb": np.min(crb_history_all),
     }

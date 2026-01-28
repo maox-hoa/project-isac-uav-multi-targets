@@ -1,5 +1,5 @@
 from radar_sensing_model.crb import crb
-def sensing_metric_max_crb_3d(S_hover, S_targets_hat, params):
+def sensing_metric_max_crb(S_hover, S_targets_hat, params):
     """
     max_k CRB_k metric (Nx3 convention)
     """

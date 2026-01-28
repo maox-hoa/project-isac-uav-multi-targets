@@ -1,10 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from estimate_target import estimate_target
+from parameters import params
+from estimate_target import estimate_target   # phiên bản 1-target MLE
 from multi_targets_sensing import sense_two_targets, associate_measurements
 
 
-def plot_scene(s_hover, p1, p2, p1_hat, p2_hat):
+def plot_scene(s_hover, P_true, P_hat):
+    """
+    Plot UAV trajectory, true targets and estimated targets.
+    """
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
 
@@ -16,24 +20,28 @@ def plot_scene(s_hover, p1, p2, p1_hat, p2_hat):
         marker="o"
     )
 
-    ax.scatter(*p1, marker="*", s=150, label="Target 1 (true)")
-    ax.scatter(*p2, marker="*", s=150, label="Target 2 (true)")
+    # True targets
+    ax.scatter(*P_true[:, 0], marker="*", s=150, label="Target 1 (true)")
+    ax.scatter(*P_true[:, 1], marker="*", s=150, label="Target 2 (true)")
 
-    ax.scatter(*p1_hat, marker="x", s=120, label="Target 1 (estimated)")
-    ax.scatter(*p2_hat, marker="x", s=120, label="Target 2 (estimated)")
+    # Estimated targets
+    ax.scatter(*P_hat[:, 0], marker="x", s=120, label="Target 1 (estimated)")
+    ax.scatter(*P_hat[:, 1], marker="x", s=120, label="Target 2 (estimated)")
 
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
-    ax.legend()
     ax.set_title("Two-target sensing + MLE localization")
+    ax.legend()
     plt.show()
 
 
 def test_pipeline():
     np.random.seed()
 
-    # UAV hover positions (N,3)
+    # -------------------------------------------------
+    # UAV hover positions (N, 3)
+    # -------------------------------------------------
     s_hover = np.array([
         [200, 200, 100],
         [300, 250, 150],
@@ -48,28 +56,69 @@ def test_pipeline():
         [1200, 900, 250]
     ])
 
-    # True targets
-    p1 = np.array([250, 600, 0])
-    p2 = np.array([550, 600, 0])
+    # -------------------------------------------------
+    # True target positions (3,2)
+    # -------------------------------------------------
+    P_true = np.array([
+        [250, 550],
+        [600, 600],
+        [0,   0]
+    ])
 
-    # Initial guesses
-    p1_init = p1 + np.array([30, -40, 20])
-    p2_init = p2 + np.array([-20, 30, -10])
+    # -------------------------------------------------
+    # Initial guesses (3,2)
+    # -------------------------------------------------
+    P_init = np.zeros((3, 2))
+    P_init[:, 0] = P_true[:, 0] + np.array([30, -40, 20])
+    P_init[:, 1] = P_true[:, 1] + np.array([-20, 30, -10])
 
     sigma = 2.0
 
-    d_echoes = sense_two_targets(s_hover, p1, p2, sigma)
-    D1, D2 = associate_measurements(s_hover, d_echoes, p1_init, p2_init)
-    p1_hat = estimate_target(s_hover, D1, p1_init)
-    p2_hat = estimate_target(s_hover, D2, p2_init)
+    # -------------------------------------------------
+    # Sensing (unlabeled echoes)
+    # -------------------------------------------------
+    d_echoes = sense_two_targets(s_hover, P_true, sigma)
 
-    print("Target 1 true / estimated:", p1, p1_hat)
-    print("Target 2 true / estimated:", p2, p2_hat)
+    # -------------------------------------------------
+    # Association
+    # -------------------------------------------------
+    D_assoc = associate_measurements(
+        s_hover,
+        d_echoes,
+        P_init
+    )   # shape (2, N)
+
+    # -------------------------------------------------
+    # Estimation (MLE per target)
+    # -------------------------------------------------
+    P_hat = np.zeros((3, 2))
+    P_hat[:, 0] = estimate_target(
+        s_hover,
+        D_assoc[0, :],
+        params,
+        x0 = None
+    )
+    P_hat[:, 1] = estimate_target(
+        s_hover,
+        D_assoc[1, :],
+        params,
+        x0 = None
+    )
+
+    # -------------------------------------------------
+    # Results
+    # -------------------------------------------------
+    print("Target 1 true / estimated:")
+    print(P_true[:, 0], P_hat[:, 0])
+
+    print("Target 2 true / estimated:")
+    print(P_true[:, 1], P_hat[:, 1])
+
     print("Echoes:\n", d_echoes)
-    print("Associated D1:", D1)
-    print("Associated D2:", D2)
+    print("Associated D (target 1):", D_assoc[0])
+    print("Associated D (target 2):", D_assoc[1])
 
-    plot_scene(s_hover, p1, p2, p1_hat, p2_hat)
+    plot_scene(s_hover, P_true, P_hat)
 
 
 if __name__ == "__main__":
